@@ -40,11 +40,9 @@ cd "$SPACK_ROOT"
 if [ "$COVERAGE" = true ]; then
     kcov "$SPACK_ROOT/coverage" "$QA_DIR/setup-env-test.sh" &> /dev/null
     kcov "$SPACK_ROOT/coverage" "$QA_DIR/completion-test.sh" &> /dev/null
-    kcov "$SPACK_ROOT/coverage" "$QA_DIR/test-env-cfg.sh" &> /dev/null
 else
     bash "$QA_DIR/setup-env-test.sh"
     bash "$QA_DIR/completion-test.sh"
-    bash "$QA_DIR/test-env-cfg.sh"
 fi
 
 # Run the test scripts for their output (these will print nicely)

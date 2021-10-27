@@ -61,6 +61,8 @@ spack:
 
 echo "Try 'spack config edit' with broken environment"
 manifest_path=`spack config edit --print-file`
+# Re-run command for coverage purposes
+$coverage_run spack config edit --print-file
 
 if [ $orig_manifest_path = $manifest_path ]; then
   pass
