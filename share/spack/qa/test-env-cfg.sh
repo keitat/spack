@@ -6,13 +6,17 @@
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 #
-# This script ensures that Spack can help users edit a configuration file
-# even when the configuration is not valid.
+# This script ensures that Spack can help users edit an environment's
+# manifest file even when it has invalid configuration.
 #
 
-# Source setup-env.sh before tests
 export QA_DIR=$(dirname "$0")
 export SHARE_DIR=$(cd "$QA_DIR/.." && pwd)
+
+# Include convenience functions
+. "$QA_DIR/test-framework.sh"
+
+# Source setup-env.sh before tests
 . "$SHARE_DIR/setup-env.sh"
 
 env_cfg=""
@@ -38,9 +42,15 @@ spack env create broken-cfg-env
 echo "Activating test environment"
 spack env activate broken-cfg-env
 env_cfg=`spack config --scope=env:broken-cfg-env edit --print-file`
-echo "Environment config file: $env_cfg"
+# Save this, so we can make sure it is reported correctly when the environment
+# contains broken configuration
+orig_manifest_path="$env_cfg"
 
-# Create an invalid packages.yaml configuration in the directory
+echo "Environment config file: $env_cfg"
+# Make sure we got a manifest file path
+contains "spack.yaml" echo "$env_cfg"
+
+# Create an invalid packages.yaml configuration for the environment
 echo "\
 spack:
   specs: []
@@ -50,5 +60,11 @@ spack:
 " > "$env_cfg"
 
 echo "Try 'spack config edit' with broken environment"
-spack config edit --print-file
+manifest_path=`spack config edit --print-file`
+
+if [ $orig_manifest_path = $manifest_path ]; then
+  pass
+else
+  fail
+fi
 
