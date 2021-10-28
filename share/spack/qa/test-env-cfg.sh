@@ -15,6 +15,7 @@ export SHARE_DIR=$(cd "$QA_DIR/.." && pwd)
 
 # Include convenience functions
 . "$QA_DIR/test-framework.sh"
+. "$QA_DIR/setup.sh"
 
 # Source setup-env.sh before tests
 . "$SHARE_DIR/setup-env.sh"
